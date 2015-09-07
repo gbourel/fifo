@@ -14,6 +14,7 @@ var FIFO = function() {
   if (!(this instanceof FIFO)) return new FIFO()
   this.node = null
   this.length = 0
+  this.subscribers = [];          // FIFO events listeners
 }
 
 FIFO.prototype.set = function(node, value) {
@@ -41,12 +42,17 @@ FIFO.prototype.unshift = function(value) {
 }
 
 FIFO.prototype.push = function(value) {
-  var node = new Node(this, value)
-  this.length++
-  if (!this.node) return this.node = node
-  this.node.prev.link(node)
-  node.link(this.node)
-  return node
+  var node = new Node(this, value);
+  this.length++;
+  if (!this.node) return this.node = node;
+  this.node.prev.link(node);
+  node.link(this.node);
+  this.subscribers.forEach(function(subscriber){
+    if(subscriber && typeof(subscriber.onPush) == 'function'){
+      subscriber.onPush.call(this, value);
+    }
+  });
+  return node;
 }
 
 FIFO.prototype.first = function() {
@@ -88,8 +94,10 @@ FIFO.prototype.toArray = function() {
   return list
 }
 
-FIFO.prototype.subscribe = function() {
-  
+FIFO.prototype.subscribe = function(subscriber) {
+  if(!subscriber)
+    return;
+  this.subscribers.push(subscriber);
 };
 
 module.exports = FIFO
