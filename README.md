@@ -37,6 +37,21 @@ if (!fifo.isEmpty()) {	// Check if stack is empty
 
 `fifo` uses a linked list behind the scene so `push`, `shift`, `unshift`, and `remove` all run in O(1)
 
+## Subscribe to "on push" messages
+
+``` js
+var fifo = require('fifo')();
+
+fifo.subscribe({ 
+    onPush: function(value){
+        console.log('Pushed value', value);
+    }
+});
+
+fifo.push('hello');
+fifo.push('world');
+```
+
 # License
 
 MIT
