@@ -88,4 +88,8 @@ FIFO.prototype.toArray = function() {
   return list
 }
 
+FIFO.prototype.subscribe = function() {
+  
+};
+
 module.exports = FIFO

@@ -55,3 +55,26 @@ test('toArray', function(t) {
   t.equal(list[2], 'baz')
   t.end()
 })
+
+test('subscribers', function(t) {
+  var fifo = new FIFO(),
+      pushed = null;
+
+  fifo.push('foo');
+  t.equal(pushed, null);
+
+  fifo.subscribe({ 
+    onPush: function(value){
+      pushed = value;
+    }
+  });
+  fifo.push('bar');
+  t.equal(pushed, 'bar');
+
+  fifo.subscribe(null);
+
+  fifo.push('baz');
+  t.equal(pushed, 'baz');
+
+  t.end();
+});
